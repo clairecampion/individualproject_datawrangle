@@ -1,0 +1,49 @@
+---
+title: "Individual project pre analysis"
+author: "Claire Campion"
+date: "5/1/2022"
+output: pdf_document
+bibliography: bib3.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Overview
+Bumble bee populations are increasingly under threat from habitat fragmentation, pesticides, pathogens, and climate change. Climate is likely a prime driver of declines in abundance and distribution, as bumble bees are limited by their thermal tolerance(@kerr2015). However, the tolerance of whole organisms often exceeds that of their gametes; for example, insects can be sterilized by temperatures below their upper thermal tolerances (@van_heerwaarden2021, @david2005). In Bombus, males are independent from the colony and can withstand extreme temperatures, but whether these temperatures compromise spermatozoa is unclear. Using commercially-reared Bombus impatiens males, we measured how exposure to sublethal temperatures near male critical thermal minimum and maximum impact spermatozoa viability. We measured temperature effects on spermatozoa in intact males to determine if males are potentially protecting spermatozoa. A live dead assay and cell counter were used to estimate sperm count and viability in males exposed to 45°C for 85 minutes and 4°C for 85 min and 48 hours. The purpose of this study is to determine how exposure time may influence temperature effects on viability. This gap is important to address as bumble bee populations continue to decline and potential sterility to males could be a contributing factor. 
+
+My goal for this project is to be able to create box plots displaying these results and getting them ready to be published. 
+
+# 2. Dataset
+The dataset I will be using for this experiment include cell counts of male spermatozoa. The data consisits of live cells, dead cells, total cells, and percent viability(live/total). Other information included in the datsets are treatment, date, colony, species, date, mass, beeid, image number, and sex. I get my datafrom a automated microscope and I take 3 images of each sample and average them to get a accurate calculation of the cell count. I have 2 datasets, one for cold and one for heat treatment as explained above. 
+
+I anticipate there not being many issues with this data but I want to explore some addition asepcts I could add to my boxplot such as changing the y axis to log scale or creating a histogram to see if differences are due to mass or other variables. 
+
+
+```{r datasets}
+
+
+```
+
+
+```{packages}
+library(tidyverse)
+library(readxl)
+
+```
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+chillvia <- read_xlsx("data/48chillcoma.xlsx", sheet= "Sheet2") %>%
+  mutate(treat=factor(treat), 
+         time=as.numeric(time),
+         live=as.numeric(live), 
+         dead=as.numeric(dead), 
+         total=as.numeric(total), 
+         pc_viability=as.numeric(pc_viability))
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
