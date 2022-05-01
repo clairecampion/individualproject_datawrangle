@@ -31,6 +31,7 @@ heatvia <- read_xlsx("heat exp.xlsx")
 install.packages("tidyverse")
 library(tidyverse)
 library(readxl)
+library(ggplot2)
 
 ```
 ## Tidying Data
@@ -83,7 +84,7 @@ hvia1 <-  heatvia %>%
 
 
 ```{boxplots}
-via3 %>%
+cvia1 %>%   
   ggplot(aes(x=treat, y=via, fill=treat)) +
   geom_boxplot(outlier.colour = NA) +
   geom_jitter(position = position_jitterdodge())
