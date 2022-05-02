@@ -11,9 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # 1. Overview
-Bumble bee populations are increasingly under threat from habitat fragmentation, pesticides, pathogens, and climate change. Climate is likely a prime driver of declines in abundance and distribution, as bumble bees are limited by their thermal tolerance @kerr2015. However, the tolerance of whole organisms often exceeds that of their gametes; for example, insects can be sterilized by temperatures below their upper thermal tolerances @van_heerwaarden2021, @david2005. In Bombus, males are independent from the colony and can withstand extreme temperatures, but whether these temperatures compromise spermatozoa is unclear. Using commercially-reared Bombus impatiens males, we measured how exposure to sublethal temperatures near male critical thermal minimum and maximum impact spermatozoa viability. We measured temperature effects on spermatozoa in intact males to determine if males are potentially protecting spermatozoa. A LIVE/DEAD™ Cell Imaging Kit (Invitrogen™) and cell counter (Nexcelom Cellometer Spectrum Image Cytometry System) were used to estimate sperm count and viability in males exposed to 45°C for 85 minutes and 4°C for 85 min and 48 hours. Cells were stained with LIVE/DEAD kit immediatly after temperature exposures and were compared to control males which were held at room temperature (22°C) throughout experiment.The purpose of this study is to determine how exposure time may influence temperature effects on viability. This gap is important to address as bumble bee populations continue to decline and potential sterility to males could be a contributing factor. 
 
-My goal for this project is to be able to create box plots and violin graphs to display these results and to prepare them to be published. 
+Bumble bee populations are increasingly under threat from habitat fragmentation, pesticides, pathogens, and climate change. Climate is likely a prime driver of declines in abundance and distribution, as bumble bees are limited by their thermal tolerance [@kerr2015]. However, the tolerance of whole organisms often exceeds that of their gametes; for example, insects can be sterilized by temperatures below their upper thermal tolerances [@van_heerwaarden2021; @david2005]. In Bombus, males are independent from the colony and can withstand extreme temperatures, but whether these temperatures compromise spermatozoa is unclear. Using commercially-reared Bombus impatiens males, we measured how exposure to sublethal temperatures near male critical thermal minimum and maximum impact spermatozoa viability. We measured temperature effects on spermatozoa in intact males to determine if males are potentially protecting spermatozoa. A LIVE/DEAD™ Cell Imaging Kit (Invitrogen™) and cell counter (Nexcelom Cellometer Spectrum Image Cytometry System) were used to estimate sperm count and viability in males exposed to 45°C for 85 minutes and 4°C for 85 min and 48 hours. Cells were stained with LIVE/DEAD kit immediatly after temperature exposures and were compared to control males which were held at room temperature (22°C) throughout experiment.The purpose of this study is to determine how exposure time may influence temperature effects on viability. This gap is important to address as bumble bee populations continue to decline and potential sterility to males could be a contributing factor. 
+
+My goal for this project is to be able to create box plots and violin graphs to display these results and begin to visualize what is happening in my datasets with effects of mass and temperature. 
 
 # 2. Dataset
 The dataset I will be using for this experiment include cell counts of male spermatozoa. The data consisits of live cells, dead cells, total cells, and percent viability(live/total). Other information included in the datsets are treatment, date, colony, species, date, mass, beeid, image number, and sex. I get my data from a automated microscope and I take 3 images of each sample and average them to get a accurate calculation of the cell count. I have 2 datasets, one for cold and one for heat treatment as explained above. 
@@ -21,25 +22,25 @@ The dataset I will be using for this experiment include cell counts of male sper
 I anticipate there not being many issues with this data but I want to explore some addition asepcts I could add to my boxplot such as changing the y axis to log scale or creating a histogram to see if differences are due to mass or other variables. 
 
 
-```{r datasets}
-chillvia <- read_xlsx("chillcoma exp.xlsx") 
-heatvia <- read_xlsx("heat exp.xlsx") 
-```
 
-
-```{packages}
-install.packages("tidyverse")
+```{r packages}
 library(tidyverse)
 library(readxl)
 library(ggplot2)
 
 ```
-## Tidying Data
+
+```{r datasets}
+chillvia <- read_xlsx("chillcoma exp.xlsx")
+heatvia <- read_xlsx("heat exp.xlsx") 
+```
+
+# 3. Tidying Data
 In this section, my goal is to tidy data, make sure all columns are correct data type, removing any potential NAs, calculating the mean live, dead, and total counts for each unique beeID, and grouping by bee ID. 
 
-```{tidy datasets}
+```{r tidy datasets}
 #For the chill dataset, I using the mutate function to assign each column is the correct data type 
-chillvia<- chillvia %>%
+chillvia <- chillvia %>%
   mutate(treat=factor(treat), 
          time=as.numeric(time),
          live=as.numeric(live), 
@@ -58,9 +59,10 @@ cvia1 <- chillvia %>%
             time = mean(time, na.rm=T), 
             mass = mean(mass, na.rm=TRUE),
             colony = unique(colony))
+cvia1
 
 #For the heat dataset, I using the mutate function to assign each column is the correct data type
-heatvia<- heatvia %>%
+heatvia <- heatvia %>%
   mutate(treat=factor(treat), 
          time=as.numeric(time),
          live=as.numeric(live), 
@@ -79,24 +81,122 @@ hvia1 <-  heatvia %>%
             time = mean(time, na.rm=T), 
             mass = mean(mass, na.rm=TRUE),
             colony = unique(colony))
+hvia1
+
+```
+# 4. Scatterplots of mass
+Using scatterplot, I will visualize how mass varies among treatments in both datasets. This is to ensure any results are not due to mass differences. 
+
+```{r scatterplots of mass}
+#comparing mass in cold treatment experiments by total cell count and % viability
+
+cvia1 %>%
+  ggplot(aes(x=mass, y=total, col=treat)) +
+  geom_point()
+
+cvia1 %>%
+  ggplot(aes(x=mass, y=via, col=treat)) +
+  geom_point()
+
+
+#comparing mass in heat treatment experiments by total cell count and % viability
+
+hvia1 %>%
+  ggplot(aes(x=mass, y=total, col=treat)) +
+  geom_point()
+
+hvia1 %>%
+  ggplot(aes(x=mass, y=via, col=treat)) +
+  geom_point()
+
 
 ```
 
 
-```{boxplots}
-cvia1 %>%   
+
+# 5. Plotting Viability in both datasets with boxplots
+Using boxplots, I will visualize how temperature impacts spermatozoa viability in male bumble bees. The first box plot will compare males in control group and males exposed to 4C for 48 hours. This group is called 'coma'. The second plot will compare males who were exposed to 45C and either hit heat stupor (hs) or were just exposed to heat and did not hit heat stupor (heat). 
+```{r boxplots of viability}
+#cold treatment boxplot
+p1 <- cvia1 %>%   
   ggplot(aes(x=treat, y=via, fill=treat)) +
-  geom_boxplot(outlier.colour = NA) +
+  geom_boxplot(outlier.shape = NA) +
+  theme_classic() +
+  scale_fill_manual(values=c("light blue","white")) +
+  labs(x="Treatment", y="% Viability") +
+  labs(fill='Treatments') +
+  geom_jitter(position = position_jitterdodge()) 
+
+p1 
+
+#cold treatment boxplot with y axis log scale to see if data is better visualized
+p2 <- cvia1 %>%   
+  ggplot(aes(x=treat, y=via, fill=treat)) +
+  geom_boxplot(outlier.shape = NA) +
+  theme_classic() +
+  scale_fill_manual(values=c("light blue","white")) +
+  labs(x="Treatment", y="% Viability") +
+  labs(fill='Treatments') +
+  scale_y_continuous(trans='log10') +
+  geom_jitter(position = position_jitterdodge()) 
+
+p2 
+
+#heat treatment boxplot
+p3 <- hvia1 %>%   
+ ggplot(aes(x=treat, y=via, fill=treat)) +
+  geom_boxplot(outlier.shape = NA) +
+  scale_fill_manual(values=c("white","red", "dark red")) +
+  theme_classic() +
+  labs(x="Treatment", y="% Viability") +
+  labs(fill='Treatments') +  
   geom_jitter(position = position_jitterdodge())
 
+p3
 
+#heat treatment boxplot with y axis log scale to see if data is better visualized
+p4 <- hvia1 %>%   
+ ggplot(aes(x=treat, y=via, fill=treat)) +
+  geom_boxplot(outlier.shape = NA) +
+  scale_fill_manual(values=c("white","red", "dark red")) +
+  theme_classic() +
+  labs(x="Treatment", y="% Viability") +
+  labs(fill='Treatments') +  
+  scale_y_continuous(trans='log10') +
+  geom_jitter(position = position_jitterdodge())
 
-
-
+p4
 
 
 ```
 
+# 6. Plotting Viability in both datasets with violin plots
+Another way to visualize this dataset could be using violin plots. 
+```{r violin plots of viability}
 
+#cold treatment violin plot
+cvia1 %>%   
+ ggplot(aes(x=treat, y=via, fill=treat)) +
+    geom_violin(width=1) +
+    theme_classic() +
+    scale_fill_manual(values=c("light blue","white")) +
+    labs(x="Treatment", y="% Viability") +
+    labs(fill='Treatments')
+
+#heat treatment violin plot
+hvia1 %>%   
+ ggplot(aes(x=treat, y=via, fill=treat)) +
+    geom_violin(width=1) +
+    theme_classic() +
+    scale_fill_manual(values=c("white","red", "dark red")) +
+    labs(x="Treatment", y="% Viability") +
+    labs(fill='Treatments')
+
+```
+
+
+# 7. References
+
+<div id="refs"></div>
 
 
