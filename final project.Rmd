@@ -134,10 +134,12 @@ hvia1
 #renaming variables to be more decriptive for graphs 
 
 cvia1<-cvia1%>% 
-  mutate(treat=ifelse(treat=="Control", "Control", ifelse(treat=="Chillcoma", "Cold", treat)))
+  mutate(treat=ifelse(treat=="Control", "Control", ifelse(treat=="Chillcoma",
+ "Cold", treat)))
          
 hvia1<-hvia1%>% 
-  mutate(treat=ifelse(treat=="control", "Control", ifelse(treat=="heat", "Heat",ifelse(treat=="hs", "Heat Stupor", treat))))
+  mutate(treat=ifelse(treat=="control", "Control", ifelse(treat=="heat", 
+ "Heat",ifelse(treat=="hs", "Heat Stupor", treat))))
 
 
 
@@ -172,7 +174,7 @@ hvia1 %>%
 
 
 ```
-This graph is showing that mass and viability/ cell count are likely not
+These graphs are showing that mass and viability/ cell count are likely not
 correlated. This is important to consider before moving forward so we know that
 a decrease in viability is not due to mass of organism. 
 
@@ -242,8 +244,8 @@ p1+p3
 
 ```
 These graphs are showing that sperm count is effected by temperature compared 
-to the control for both heat and cold treatments. More statistical testing is needed to 
-determine if these treatment cause a significant decrease. 
+to the control for both heat and cold treatments. More statistical testing is 
+needed to determine if these treatment cause a significant decrease. 
 
 
 
@@ -294,6 +296,9 @@ the order of cold treatment graphs so control is first. I also added summaries
 below each plot of findings, added points to my violin plots, used patchwork to 
 combine the best two graphs together, renamed treatments, and adjusted y axis.
 
+Overall, getting feedback from my peers was helpful in making my figures closer 
+to being ready to be published. I also was able to implement their feedback to 
+make this document easier to read and understand. 
 
 
 # 7. References
