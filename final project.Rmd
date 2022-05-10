@@ -1,5 +1,5 @@
 ---
-title: "Individual project pre analysis"
+title: "Final project analysis"
 author: "Claire Campion"
 date: "5/11/2022"
 output: pdf_document
